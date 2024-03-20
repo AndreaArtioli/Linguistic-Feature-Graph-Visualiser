@@ -17,7 +17,7 @@ G.add_nodes_from(df["Label"])
 # Your implications as a list of strings
 implications = df["Implication(s)"]
 
-# Create a directed graph
+# Create an empty directed graph
 G = nx.DiGraph()
 
 # Add nodes and edges based on implications
@@ -35,9 +35,9 @@ for node, imp in zip(df["Label"], implications):
 if CIRCULAR_LAYOUT == True:
     pos = nx.circular_layout(G, scale=500)
 
-leaf_nodes_color = "#79651f" # es: "#79651f" -> dark brown
-root_nodes_color = "#8f8877" # es: "#8f8877" -> clear gray
-other_nodes_color= "#5a4c1a" # es: "#5a4c1a" -> yellow
+leaf_nodes_color = "red" # es: "#79651f" -> dark brown
+root_nodes_color = "green" # es: "#5a4c1a" -> yellow
+other_nodes_color= "blue" # es: "#8f8877" -> clear gray
 
 for node in G.nodes():
     if CIRCULAR_LAYOUT == True:
