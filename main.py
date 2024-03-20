@@ -25,7 +25,7 @@ for node, imp in zip(df["Label"], implications):
     if not pd.notna(imp):
         continue
 
-    imp = imp.translate({ord(k):" " for k in "()+-¬,"})
+    imp = imp.translate({ord(k):" " for k in "()+-¬,−"})
     imp = imp.replace("or", " ")
     imp = imp.split()
     # print(imp)
