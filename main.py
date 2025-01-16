@@ -3,13 +3,17 @@ import networkx as nx
 from pyvis.network import Network
 
 "############################ INIT SECTION ############################"
-CIRCULAR_LAYOUT = False
+CIRCULAR_LAYOUT = True
 
 "############################ CODE SECTION ############################"
-df = pd.read_csv("TableA.xlsx - TABLE A.csv", )
-df.drop(["Unnamed: 0"], axis=1, inplace=True)
-df.drop(df.tail(1).index,inplace=True)
-# print(df)
+# df = pd.read_csv("TableA.xlsx - TABLE A.csv", )
+# df = pd.read_csv("TableA.xlsx - TABLE A(2).csv", sep=";", skiprows=[0])
+df = pd.read_csv("TableA.xlsx - TABLE A(2).csv", sep=";",)
+# df.drop(["Unnamed: 0"], axis=1, inplace=True)
+# df.drop(df.tail(1).index,inplace=True)
+# print(df.head(10))
+# print(df.columns)
+# exit()
 
 G = nx.MultiDiGraph()
 G.add_nodes_from(df["Label"])
@@ -34,6 +38,7 @@ for node, imp in zip(df["Label"], implications):
 
 if CIRCULAR_LAYOUT == True:
     pos = nx.circular_layout(G, scale=500)
+    pos = nx.spring_layout(G, scale=500)
 
 leaf_nodes_color = "red" # es: "#79651f" -> dark brown
 root_nodes_color = "green" # es: "#5a4c1a" -> yellow
@@ -61,6 +66,21 @@ nt = Network(   directed=True,
                 filter_menu = True,
                 # layout="barnesHut", # ocio che questo cambia un sacco di cose
                 )
+# nt.set_options("""
+# {
+# "layout": {
+#     "hierarchical": {
+#     "enabled": true,
+#     "levelSeparation": 150,
+#     "nodeSpacing": 100,
+#     "treeSpacing": 200,
+#     "direction": "UD",
+#     "sortMethod": "directed"
+#     }
+# }
+# 
+# }
+# """)
 
 nt.toggle_physics(False)
 nt.show_buttons(filter_=['physics'])
