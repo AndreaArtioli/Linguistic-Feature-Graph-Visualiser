@@ -21,6 +21,7 @@ for node, imp in zip(df["Label"], implications):
     if not pd.notna(imp):
         continue
 
+    imp = imp.replace("−", "-")
     raw_implications = imp
     imp = imp.replace("or", " ")
 
