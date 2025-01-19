@@ -4,6 +4,7 @@ from pyvis.network import Network
 
 "############################ INIT SECTION ############################"
 CIRCULAR_LAYOUT = True
+SIZE            = True
 
 "############################ CODE SECTION ############################"
 # Read language table. Must have columns "Label" and "Implication(s)". Format CSV, separator ";".
@@ -47,6 +48,10 @@ leaf_nodes_color = "red" # es: "#79651f" -> dark brown
 root_nodes_color = "green" # es: "#5a4c1a" -> yellow
 other_nodes_color= "blue" # es: "#8f8877" -> clear gray
 
+max_degree = max([d[1] for d in G.out_degree()])
+min_degree = min([d[1] for d in G.out_degree()])
+multiplier = 20.0/(max_degree - min_degree)
+
 # Graphics settings: set positions and colors for each node
 for node in G.nodes():
     if CIRCULAR_LAYOUT == True:
@@ -59,6 +64,9 @@ for node in G.nodes():
         G.nodes[node]["color"] = root_nodes_color
     else:
         G.nodes[node]["color"] = other_nodes_color
+
+    if SIZE:
+        G.nodes[node]["size"] = 5 + (G.out_degree(node) - min_degree) * multiplier
 
 nt = Network(   directed=True,   
                 cdn_resources = "remote",
