@@ -1,2 +1,4 @@
 test/
 lib/
+venv/
+nx.html

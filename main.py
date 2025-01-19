@@ -6,17 +6,8 @@ from pyvis.network import Network
 CIRCULAR_LAYOUT = True
 
 "############################ CODE SECTION ############################"
-# df = pd.read_csv("TableA.xlsx - TABLE A.csv", )
-# df = pd.read_csv("TableA.xlsx - TABLE A(2).csv", sep=";", skiprows=[0])
+# Read language table. Must have columns "Label" and "Implication(s)". Format CSV, separator ";".
 df = pd.read_csv("TableA.xlsx - TABLE A(2).csv", sep=";",)
-# df.drop(["Unnamed: 0"], axis=1, inplace=True)
-# df.drop(df.tail(1).index,inplace=True)
-# print(df.head(10))
-# print(df.columns)
-# exit()
-
-G = nx.MultiDiGraph()
-G.add_nodes_from(df["Label"])
 
 # Your implications as a list of strings
 implications = df["Implication(s)"]
@@ -29,21 +20,34 @@ for node, imp in zip(df["Label"], implications):
     if not pd.notna(imp):
         continue
 
-    imp = imp.translate({ord(k):" " for k in "()+-¬,−"})
+    raw_implications = imp
     imp = imp.replace("or", " ")
-    imp = imp.split()
-    # print(imp)
-    for n in imp:
-        G.add_edge(n, node)
 
+    attributes = imp.translate({ord(k):" " for k in "(),"})
+    attributes = attributes.split()
+
+    imp = imp.translate({ord(k):" " for k in "()+-¬,−"})
+    imp = imp.split()
+
+    for n, attr in zip(imp, attributes):
+        G.add_edge(n, node, )
+        if "single_implications" not in G[n][node].keys():
+            G[n][node]["single_implications"] = list()
+            G[n][node]["raw_implications"] = raw_implications
+
+        G[n][node]["single_implications"].append(attr)
+
+# Graphics settings: layout and positions
 if CIRCULAR_LAYOUT == True:
     pos = nx.circular_layout(G, scale=500)
     pos = nx.spring_layout(G, scale=500)
 
+# Graphics settings: colors
 leaf_nodes_color = "red" # es: "#79651f" -> dark brown
 root_nodes_color = "green" # es: "#5a4c1a" -> yellow
 other_nodes_color= "blue" # es: "#8f8877" -> clear gray
 
+# Graphics settings: set positions and colors for each node
 for node in G.nodes():
     if CIRCULAR_LAYOUT == True:
         G.nodes[node]["x"] =  pos[node][0]
@@ -56,10 +60,6 @@ for node in G.nodes():
     else:
         G.nodes[node]["color"] = other_nodes_color
 
-# print(len(G.nodes()))
-# print(G.nodes())
-
-# print(nx.is_directed_acyclic_graph(G))
 nt = Network(   directed=True,   
                 cdn_resources = "remote",
                 select_menu = True,
